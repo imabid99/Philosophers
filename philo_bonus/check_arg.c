@@ -6,11 +6,11 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:26 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 15:13:34 by imabid           ###   ########.fr       */
+/*   Updated: 2022/02/28 15:07:17 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void	print_error(char *error)
 {
@@ -29,8 +29,6 @@ void	init1(t_all *all)
 	while (++i < all->ph_nb)
 	{
 		all->philo[i].index = i;
-		all->philo[i].left_fork = i;
-		all->philo[i].right_fork = (i + 1) % all->ph_nb;
 		all->philo[i].eat_time = 0;
 		all->philo[i].all = all;
 		all->philo[i].nb_of_eat = 0;
@@ -39,15 +37,14 @@ void	init1(t_all *all)
 
 void	mutex_init(t_all *all)
 {
-	int	i;
-
-	i = -1;
-	while (++i < all->ph_nb)
-	{
-		pthread_mutex_init(&all->fork[i], NULL);
-	}
-	pthread_mutex_init(&all->write, NULL);
-	pthread_mutex_init(&all->eat, NULL);
+	sem_unlink("/fork");
+	sem_unlink("/write");
+	sem_unlink("/eat");
+	all->fork = sem_open("/fork", O_CREAT, S_IRWXU,
+			all->ph_nb);
+	all->write = sem_open("/write", O_CREAT, S_IRWXU, 1);
+	all->eat = sem_open("/eat", O_CREAT, S_IRWXU, 1);
+		printf_error();
 }
 
 void	check_arg(int ac, char **av, t_all *all)
@@ -88,8 +85,6 @@ void	ft_check(int ac, char **av)
 	while (++i < ac)
 	{
 		j = -1;
-		// if(ft_atoi(av[i]) > MAX_INT)
-		// 	print_error(N_NUB);
 		while (av[i][++j])
 			if ((av[i][j] < '0' || av[i][j] > '9'))
 				print_error(N_NUB);

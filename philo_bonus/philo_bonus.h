@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
+/*   philo_bonus.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:03 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 15:09:31 by imabid           ###   ########.fr       */
+/*   Updated: 2022/02/28 15:06:12 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <pthread.h>
+# include <semaphore.h>
+# include <fcntl.h>
+# include <signal.h>
+
 
 # define  PH_NB "ERROR : Number of philo\n"
 # define  T_DIE "ERROR : Time to die\n"
@@ -26,7 +30,7 @@
 # define  C_EAT "ERROR : Number of times each philosopher must eat\n"
 # define  N_ARG "ERROR : Number of args\n"
 # define  N_NUB "ERROR : Digit numbers\n"
-# define  MAX_INT 2147483647
+
 typedef struct s_philo
 {
 	int				left_fork;
@@ -36,7 +40,7 @@ typedef struct s_philo
 	long			sleep_time;
 	int				nb_of_eat;
 	int				h_eat;
-	pthread_t		th_philo;
+	sem_t		th_philo;
 	struct s_all	*all;
 }	t_philo;
 
@@ -50,9 +54,9 @@ typedef struct s_all
 	int				dead;
 	int				all_eat;
 	long			first_time;
-	pthread_mutex_t	*fork;
-	pthread_mutex_t	write;
-	pthread_mutex_t	eat;
+	sem_t	*fork;
+	sem_t	write;
+	sem_t	eat;
 	t_philo			*philo;
 }		t_all;
 

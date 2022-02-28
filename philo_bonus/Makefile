@@ -1,11 +1,12 @@
 
 NAME	= philo
 CC		= gcc
-FLAGS	=
+FLAGS	= -Wall -Wextra -Werror
 
 SRCS	= check_arg.c  \
 		main.c \
-		philo_utils.c
+		philo_utils.c \
+		philo_utils2.c
 
 OBJS	= $(SRCS:.c=.o)
 

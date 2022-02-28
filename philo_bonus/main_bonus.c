@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 19:26:48 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/26 10:25:39 by imabid           ###   ########.fr       */
+/*   Updated: 2022/02/28 08:50:09 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	philo_eat(t_philo *philo)
 
 	all = philo->all;
 	long i;
-	pthread_mutex_lock(&all->fork[philo->left_fork]);
+	sem_wait(&all->fork[philo->left_fork]);
 	philo_write(all, philo->index, "take left fork");
-	pthread_mutex_lock(&all->fork[philo->right_fork]);
+	sem_wait(&all->fork[philo->right_fork]);
 	philo_write(all, philo->index, "take right fork");
-	pthread_mutex_lock(&all->philo->eat);
+	sem_wait(&all->eat);
 	philo_write(all, philo->index, "is eating 🍗");
 	philo->eat_time = current_timestamp();
-	pthread_mutex_unlock(&all->philo->eat);
+	sem_post(&all->eat);
 	usleep(all->tm_to_eat * 1000 - 20000);
 	// if(philo->eat_time - current_timestamp() >= all->tm_to_eat)
 	// 	usleep(50);
@@ -36,8 +36,8 @@ void	philo_eat(t_philo *philo)
 		usleep(50);
 	}
 	philo->nb_of_eat++;
-	pthread_mutex_unlock(&all->fork[philo->left_fork]);
-	pthread_mutex_unlock(&all->fork[philo->right_fork]);
+	sem_post(&all->fork[philo->left_fork]);
+	sem_post(&all->fork[philo->right_fork]);
 }
 
 void	check_death(t_all *all, t_philo *philo)
