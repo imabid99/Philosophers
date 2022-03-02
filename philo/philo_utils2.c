@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 13:29:07 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 14:56:50 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/01 16:54:53 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,11 @@ void	my_sleep(t_all *all, long do_time, long time_to)
 			break ;
 		usleep(50);
 	}
+}
+
+void	one_philo(t_all *all, int i)
+{
+	my_sleep(all, current_timestamp(), all->tm_to_die);
+	philo_write(all, i, "died");
+	all->dead = 1;
 }

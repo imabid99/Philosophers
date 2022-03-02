@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 19:26:48 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 14:54:57 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/01 16:53:31 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void	go_routine(t_all *all)
 	{
 		pthread_create(&all->philo[i].th_philo, NULL, &routine, &all->philo[i]);
 		philo[i].eat_time = current_timestamp();
+		if (all->ph_nb == 1)
+			one_philo(all, philo->index);
 		usleep(50);
 	}
 	check_death(all, philo);
@@ -86,13 +88,3 @@ int	main(int ac, char **av)
 	go_routine(&all);
 	return (0);
 }
-
-// static void	one_philo(t_all *all, int i)
-// {
-// 		my_sleep(all, current_timestamp(),all->tm_to_die);
-// 		philo_write(all, i, "died");
-// 		all->dead = 1;
-// }
-
-// if(all->ph_nb == 1)
-			// 	one_philo(all, i);

@@ -6,83 +6,60 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 19:26:48 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 08:50:09 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/02 18:10:40 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 void	philo_eat(t_philo *philo)
 {
 	t_all	*all;
 
 	all = philo->all;
-	long i;
-	sem_wait(&all->fork[philo->left_fork]);
-	philo_write(all, philo->index, "take left fork");
-	sem_wait(&all->fork[philo->right_fork]);
-	philo_write(all, philo->index, "take right fork");
-	sem_wait(&all->eat);
-	philo_write(all, philo->index, "is eating 🍗");
+	sem_wait(all->fork);
+	philo_write(all, philo->index, "has taken a fork");
+	sem_wait(all->fork);
+	philo_write(all, philo->index, "has taken a fork");
+	sem_wait(all->eat);
+	philo_write(all, philo->index, "is eating");
+	philo->h_eat = 1;
 	philo->eat_time = current_timestamp();
-	sem_post(&all->eat);
-	usleep(all->tm_to_eat * 1000 - 20000);
-	// if(philo->eat_time - current_timestamp() >= all->tm_to_eat)
-	// 	usleep(50);
-	while (1)
-	{
-		if (current_timestamp() - philo->eat_time >= all->tm_to_eat)
-			break ;
-		usleep(50);
-	}
+	sem_post(all->eat);
+	my_sleep(all, philo->eat_time, all->tm_to_eat);
+	philo->h_eat = 0;
 	philo->nb_of_eat++;
-	sem_post(&all->fork[philo->left_fork]);
-	sem_post(&all->fork[philo->right_fork]);
+	sem_post(all->fork);
+	sem_post(all->fork);
 }
 
-void	check_death(t_all *all, t_philo *philo)
+void	routine(t_philo *philo)
 {
-    int	i;
-
-	while(!(all->dead))
-	{
-		i = -1;
-		while (++i < all->ph_nb)
-		{
-			pthread_mutex_lock(&philo->eat);
-			if (current_timestamp() - philo[i].eat_time > all->tm_to_die)
-			{
-				philo_write(all, i, "died");
-				all->dead = 1;
-			}
-			pthread_mutex_unlock(&philo->eat);
-			// usleep(1000);
-		}
-		if(all->count_of_eating == philo->nb_of_eat)
-			break;
-	}
-}
-
-void	*routine(void *v_philo)
-{
-	t_philo		*philo;
 	t_all		*all;
-
-	philo = (t_philo *)v_philo;
 	all = philo->all;
+	philo->eat_time = current_timestamp();
+	pthread_create(&philo->th_philo, NULL, check_death, philo);
 	while (!all->dead)
 	{
 		philo_eat(philo);
-		if(all->count_of_eating == philo->nb_of_eat)
+		if (all->must_eat != -1 && philo->nb_of_eat
+			>= all->must_eat)
 			break;
+		// if (all->all_eat)
+		// 	exit(0);
 		philo_write(all, philo->index, "is sleeping");
+		philo->sleep_time = current_timestamp();
+		my_sleep(all, philo->sleep_time, all->tm_to_sleep);
 		philo_write(all, philo->index, "is thinking");
-		usleep(all->tm_to_sleep * 1000);
+		usleep(50);
 	}
-	return (NULL);
+	pthread_join(philo->th_philo,NULL);
+	if(all->dead)
+		exit(1);
+	exit(0);
 }
 
-void	go_routine(t_all *all)
+int		go_routine(t_all *all)
 {
 	int		i;
 	t_philo	*philo;
@@ -91,32 +68,27 @@ void	go_routine(t_all *all)
 	philo = all->philo;
 	while (++i < all->ph_nb)
 	{
-		pthread_create(&all->philo[i].th_philo, NULL, &routine, &all->philo[i]);
+		philo[i].pr_philo = fork();
+		if(philo[i].pr_philo < 0)
+			return 1;
+		else if(philo[i].pr_philo == 0)
+			routine(&philo[i]);
+		if (all->ph_nb == 1)
+			one_philo(all, philo->index);
 		usleep(50);
 	}
-	check_death(all, philo);
-	// philo_destroy(all);
-}
-
-void	philo_destroy(t_all *all)
-{
-	int	i;
-
-	i = -1;
-	while (++i < all->ph_nb)
-	{
-		pthread_join(all->philo[i].th_philo, NULL);
-	}
-	pthread_mutex_destroy(&all->write);
+	c_all(all);
+	return 0;
 }
 
 int	main(int ac, char **av)
 {
 	t_all		all;
-	pthread_t	*t;
 	int			i;
 
 	i = 0;
+	if (ac != 6 && ac != 5)
+		print_error(N_ARG);
 	check_arg(ac, av, &all);
 	go_routine(&all);
 	return (0);

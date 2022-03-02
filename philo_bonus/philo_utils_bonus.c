@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:39:20 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/24 16:42:07 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/02 15:39:59 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	ft_atoi(const char *str)
 {
@@ -38,9 +38,6 @@ int	ft_atoi(const char *str)
 
 int	ft_isdigit(int c)
 {
-	int	i;
-
-	i = -1;
 	if (c >= 48 && c <= 57)
 		return (1);
 	return (0);
@@ -59,12 +56,12 @@ void	philo_write(t_all *all, int i, char *str)
 	long	t;
 
 	t = current_timestamp() - all->first_time ;
-	pthread_mutex_lock(&all->write);
+	sem_wait(all->write);
 	if (!all->dead)
 	{
 		printf("%ld ", t);
 		printf(" %i ", i + 1);
 		printf("%s\n", str);
 	}
-	pthread_mutex_unlock(&all->write);
+	sem_post(all->write);
 }

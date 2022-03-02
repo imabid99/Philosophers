@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:03 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 15:09:31 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/01 16:53:52 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define  C_EAT "ERROR : Number of times each philosopher must eat\n"
 # define  N_ARG "ERROR : Number of args\n"
 # define  N_NUB "ERROR : Digit numbers\n"
-# define  MAX_INT 2147483647
+
 typedef struct s_philo
 {
 	int				left_fork;
@@ -67,5 +67,6 @@ void	ft_check(int ac, char **av);
 void	check_death(t_all *all, t_philo *philo);
 void	my_sleep(t_all *all, long do_time, long time_to);
 void	print_error(char *error);
+void	one_philo(t_all *all, int i);
 
 #endif

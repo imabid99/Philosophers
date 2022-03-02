@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:26 by imabid            #+#    #+#             */
-/*   Updated: 2022/02/28 15:13:34 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/01 16:53:09 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,6 @@ void	ft_check(int ac, char **av)
 	while (++i < ac)
 	{
 		j = -1;
-		// if(ft_atoi(av[i]) > MAX_INT)
-		// 	print_error(N_NUB);
 		while (av[i][++j])
 			if ((av[i][j] < '0' || av[i][j] > '9'))
 				print_error(N_NUB);
