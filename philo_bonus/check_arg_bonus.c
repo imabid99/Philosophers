@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:26 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/02 15:27:14 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/03 08:58:12 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ void	init1(t_all *all)
 	i = -1;
 	all->first_time = current_timestamp();
 	all->philo = malloc(sizeof(t_philo) * (all->ph_nb + 1));
-	// all->fork = malloc(sizeof(pthread_mutex_t) * (all->ph_nb + 1));
 	while (++i < all->ph_nb)
 	{
 		all->philo[i].index = i;
 		all->philo[i].eat_time = 0;
 		all->philo[i].all = all;
 		all->philo[i].nb_of_eat = 0;
+		all->philo[i].all_eat = 0;
 	}
 }
 
@@ -44,7 +44,6 @@ void	sema_init(t_all *all)
 			all->ph_nb);
 	all->write = sem_open("write", O_CREAT, S_IRWXU, 1);
 	all->eat = sem_open("eat", O_CREAT, S_IRWXU, 1);
-		// printf_error();
 }
 
 void	check_arg(int ac, char **av, t_all *all)
@@ -63,7 +62,6 @@ void	check_arg(int ac, char **av, t_all *all)
 	if (all->tm_to_sleep <= 0)
 		print_error(T_SLEEP);
 	all->dead = 0;
-	all->all_eat = 0;
 	if (ac == 6)
 	{
 		all->must_eat = ft_atoi(av[5]);

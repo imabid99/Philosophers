@@ -6,11 +6,23 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/26 13:29:07 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/01 16:54:53 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/03 12:28:30 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static void	must_eat(t_all *all, t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while ((all->must_eat != -1) && (i < all->ph_nb)
+		&& (philo[i].nb_of_eat >= all->must_eat))
+		i++;
+	if (i == all->ph_nb)
+		all->all_eat = 1;
+}
 
 void	check_death(t_all *all, t_philo *philo)
 {
@@ -32,12 +44,8 @@ void	check_death(t_all *all, t_philo *philo)
 		}
 		if (all->dead)
 			break ;
-		i = 0;
-		while ((all->must_eat != -1) && (i < all->ph_nb)
-			&& (philo[i].nb_of_eat >= all->must_eat))
-			i++;
-		if (i == all->ph_nb)
-			all->all_eat = 1;
+		must_eat(all, philo);
+		usleep(1000);
 	}
 }
 

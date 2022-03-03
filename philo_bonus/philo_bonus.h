@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 19:29:03 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/02 17:59:38 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/03 11:45:45 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <fcntl.h>
 # include <signal.h>
 
-
 # define  PH_NB "ERROR : Number of philo\n"
 # define  T_DIE "ERROR : Time to die\n"
 # define  T_EAT "ERROR : Time to eat\n"
@@ -30,6 +29,8 @@
 # define  C_EAT "ERROR : Number of times each philosopher must eat\n"
 # define  N_ARG "ERROR : Number of args\n"
 # define  N_NUB "ERROR : Digit numbers\n"
+# define  TH_PRB "ERROR : Threades\n"
+# define  SM_PRB "ERROR : Semaphore\n"
 
 typedef struct s_philo
 {
@@ -40,7 +41,8 @@ typedef struct s_philo
 	long			sleep_time;
 	int				nb_of_eat;
 	int				h_eat;
-	pid_t		pr_philo;
+	int				all_eat;
+	pid_t			pr_philo;
 	pthread_t		th_philo;
 	struct s_all	*all;
 }	t_philo;
@@ -55,9 +57,9 @@ typedef struct s_all
 	int				dead;
 	int				all_eat;
 	long			first_time;
-	sem_t	*fork;
-	sem_t	*write;
-	sem_t	*eat;
+	sem_t			*fork;
+	sem_t			*write;
+	sem_t			*eat;
 	t_philo			*philo;
 }		t_all;
 
@@ -73,5 +75,9 @@ void	*check_death(void *v_void);
 void	my_sleep(t_all *all, long do_time, long time_to);
 void	print_error(char *error);
 void	one_philo(t_all *all, int i);
+void	ft_putchar_fd(char c, int fd);
+void	ft_putnbr_fd(int n, int fd);
+void	ft_putendl_fd(char *s, int fd);
+void	free_all(t_all *all);
 
 #endif

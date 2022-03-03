@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 19:26:48 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/01 16:53:31 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/03 12:21:32 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,6 @@ int	main(int ac, char **av)
 		print_error(N_ARG);
 	check_arg(ac, av, &all);
 	go_routine(&all);
+	free_all(&all);
 	return (0);
 }

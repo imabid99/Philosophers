@@ -6,7 +6,7 @@
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 19:26:48 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/02 18:10:40 by imabid           ###   ########.fr       */
+/*   Updated: 2022/03/03 11:46:24 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,30 +36,32 @@ void	philo_eat(t_philo *philo)
 void	routine(t_philo *philo)
 {
 	t_all		*all;
+
 	all = philo->all;
 	philo->eat_time = current_timestamp();
 	pthread_create(&philo->th_philo, NULL, check_death, philo);
-	while (!all->dead)
+	while (!all->dead && !philo->all_eat)
 	{
 		philo_eat(philo);
 		if (all->must_eat != -1 && philo->nb_of_eat
 			>= all->must_eat)
-			break;
-		// if (all->all_eat)
-		// 	exit(0);
+		{
+			all->all_eat = 1;
+			break ;
+		}
 		philo_write(all, philo->index, "is sleeping");
 		philo->sleep_time = current_timestamp();
 		my_sleep(all, philo->sleep_time, all->tm_to_sleep);
 		philo_write(all, philo->index, "is thinking");
 		usleep(50);
 	}
-	pthread_join(philo->th_philo,NULL);
-	if(all->dead)
+	pthread_join(philo->th_philo, NULL);
+	if (all->dead)
 		exit(1);
 	exit(0);
 }
 
-int		go_routine(t_all *all)
+int	go_routine(t_all *all)
 {
 	int		i;
 	t_philo	*philo;
@@ -69,16 +71,16 @@ int		go_routine(t_all *all)
 	while (++i < all->ph_nb)
 	{
 		philo[i].pr_philo = fork();
-		if(philo[i].pr_philo < 0)
-			return 1;
-		else if(philo[i].pr_philo == 0)
+		if (philo[i].pr_philo < 0)
+			return (1);
+		else if (philo[i].pr_philo == 0)
 			routine(&philo[i]);
 		if (all->ph_nb == 1)
 			one_philo(all, philo->index);
 		usleep(50);
 	}
 	c_all(all);
-	return 0;
+	return (0);
 }
 
 int	main(int ac, char **av)
@@ -90,6 +92,8 @@ int	main(int ac, char **av)
 	if (ac != 6 && ac != 5)
 		print_error(N_ARG);
 	check_arg(ac, av, &all);
-	go_routine(&all);
+	if (go_routine(&all))
+		print_error(SM_PRB);
+	free_all(&all);
 	return (0);
 }

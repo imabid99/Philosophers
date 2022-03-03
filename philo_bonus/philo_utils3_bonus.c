@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils3_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: imabid <imabid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/10 19:39:20 by imabid            #+#    #+#             */
-/*   Updated: 2022/03/03 12:28:16 by imabid           ###   ########.fr       */
+/*   Created: 2022/03/03 11:16:34 by imabid            #+#    #+#             */
+/*   Updated: 2022/03/03 11:45:16 by imabid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	ft_atoi(const char *str)
 {
@@ -38,39 +38,45 @@ int	ft_atoi(const char *str)
 
 int	ft_isdigit(int c)
 {
-	int	i;
-
-	i = -1;
 	if (c >= 48 && c <= 57)
 		return (1);
 	return (0);
 }
 
-long	current_timestamp(void)
+void	ft_putchar_fd(char c, int fd)
 {
-	struct timeval	te;
-
-	gettimeofday(&te, NULL);
-	return ((te.tv_sec * 1000) + te.tv_usec / 1000);
+	write(fd, &c, 1);
 }
 
-void	philo_write(t_all *all, int i, char *str)
+void	ft_putnbr_fd(int n, int fd)
 {
-	long	t;
+	long	i;
 
-	t = current_timestamp() - all->first_time ;
-	pthread_mutex_lock(&all->write);
-	if (!all->dead)
+	i = n;
+	if (i < 0)
 	{
-		printf("%ld ", t);
-		printf(" %i ", i + 1);
-		printf("%s\n", str);
+		ft_putchar_fd('-', fd);
+		i *= -1;
 	}
-	pthread_mutex_unlock(&all->write);
+	if (i < 10)
+	{
+		ft_putchar_fd(i + 48, fd);
+	}
+	else
+	{
+		ft_putnbr_fd(i / 10, fd);
+		ft_putnbr_fd(i % 10, fd);
+	}
 }
 
-void	free_all(t_all *all)
+void	ft_putendl_fd(char *s, int fd)
 {
-	free(all->philo);
-	free(all->fork);
+	if (!s)
+		return ;
+	while (*s)
+	{
+		write(fd, s, 1);
+		s++;
+	}
+	write(fd, "\n", 1);
 }
